@@ -1,18 +1,6 @@
 <template>
+      <Navbar/>
   <div>
-    <nav class="navbar">
-      <div class="logo">
-        <img src="../assets/pics/cart1.jpg" alt="">
-        <h1>QUALITY GATE</h1>
-      </div>
-      <div>
-        <h1>fzefze</h1>
-      </div>
-      <ul class="nav-links">
-
-        <li><a href="#">Logout</a></li>
-      </ul>
-    </nav>
     <div class="table-container">
       <table>
         <thead>
@@ -30,8 +18,8 @@
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
             <td>{{ index + 1 }}</td>
-            <td><img :src="`../assets/pics/${item.pic1}`" alt="Pic 1" /></td>
-            <td><img :src="item.pic2" alt="Pic 2" /></td>
+            <td><img :src="`src/assets/pics/${item.pic1}`" alt="Pic 1" /></td>
+            <td><img :src="`src/assets/pics/${item.pic2}`" alt="Pic 2" /></td>
             <td>{{ item.zone }}</td>
             <td>{{ item.info1 }}</td>
             <td>{{ item.info2 }}</td>
@@ -49,19 +37,23 @@
         <form @submit.prevent="handleEdit">
           <div class="image-section">
             <div class="image-container">
-              <img :src="`@/assets/pics/${selectedItem.pic1}`" alt="Pic 1" />
+              <img :src="`src/assets/pics/${selectedItem.pic1}`" alt="Pic 1" />
               <button type="button">OK</button>
             </div>
             <div class="image-container">
-              <img :src="`@/assets/pics/${selectedItem.pic2}`" alt="Pic 2" />
+              <img :src="`src/assets/pics/${selectedItem.pic2}`" alt="Pic 2" />
               <button type="button">Not ok</button>
             </div>
           </div>
           <div class="input-group">
             <label for="motif">Motif</label>
-            <textarea id="motif" v-model="selectedItem.motif" required></textarea>
+            <textarea id="motif" v-model="selectedItem.motif" required class="areatxt" placeholder="Motif ..." rows="5"></textarea>
           </div>
-          <button type="submit">Save</button>
+          <div class="modal-footer">
+            <button type="submit" >Save</button>
+            <button @click="closeModal" class="secondaryBtn">Close</button>
+
+          </div>
         </form>
       </template>
     </modal>
@@ -71,33 +63,35 @@
 <script setup>
 import { ref } from 'vue';
 import Modal from './Modal.vue'; // Assuming you have a Modal component
+import Navbar from '../components/Navbar.vue'
+
 const selectedItem = ref(null);
 
 const items = ref([
   {
     pic1: 'cart1.jpg',
-    pic2: '../assets/pics/cart1.jpg',
+    pic2: 'cart1.jpg',
     zone: 'Zone 1',
     info1: 'Information 1',
     info2: 'Information 2',
   },
   {
-    pic1: 'path/to/pic1.jpg',
-    pic2: 'path/to/pic2.jpg',
+    pic1: 'cart1.jpg',
+    pic2: 'cart1.jpg',
     zone: 'Zone 1',
     info1: 'Information 1',
     info2: 'Information 2',
   },
   {
-    pic1: 'path/to/pic1.jpg',
-    pic2: 'path/to/pic2.jpg',
+    pic1: 'cart1.jpg',
+    pic2: 'cart1.jpg',
     zone: 'Zone 1',
     info1: 'Information 1',
     info2: 'Information 2',
   },
   {
-    pic1: 'path/to/pic1.jpg',
-    pic2: 'path/to/pic2.jpg',
+    pic1: 'cart1.jpg',
+    pic2: 'cart1.jpg',
     zone: 'Zone 1',
     info1: 'Information 1',
     info2: 'Information 2',
@@ -123,45 +117,11 @@ const handleEdit = () => {
 </script>
 
 <style scoped>
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: black;
-  padding: 1rem 2rem;
-  color: white;
-}
 
-.logo {
-  display: flex;
-  align-items: center;
-  height: 20px;
-}
-
-.logo img {
-  height: 12px;
-  margin-right: 1rem;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-}
-
-.nav-links a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-  color: #3498db;
-}
 
 .table-container {
   margin: 2rem;
+
 }
 
 table {
@@ -170,7 +130,7 @@ table {
 }
 
 th, td {
-  padding: 1rem;
+  padding: 0.5rem;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
@@ -180,24 +140,13 @@ th {
 }
 
 td img {
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
+  border-radius: 5px;
 }
 
-button {
-  padding: 0.5rem 1rem;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
 
-button:hover {
-  background-color: #2980b9;
-}
 
 .input-group {
   margin-bottom: 1rem;
@@ -218,6 +167,7 @@ button:hover {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
+  max-width: 100%;
 }
 
 .image-container {
@@ -225,8 +175,8 @@ button:hover {
 }
 
 .image-container img {
-  width: 100px;
-  height: 100px;
+  width: 350px;
+  height: 300px;
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 0.5rem;
@@ -246,5 +196,27 @@ button:hover {
 
 .image-container button:hover {
   background-color: #2980b9;
+}
+.modal-footer{
+  display: flex;
+  gap: 5px;
+  width: 100%;
+  align-items: end;
+  justify-content: flex-end;
+}
+.secondaryBtn{
+  background-color: white ;
+  color: black;
+  border: #171717 solid 1px;
+}
+
+.secondaryBtn:hover{
+  background-color: rgb(235, 235, 235) ;
+}
+.areatxt{
+  max-width: 100%;
+  width: 100%;
+  border-radius: 8px;
+  padding: 8px;
 }
 </style>

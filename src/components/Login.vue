@@ -5,8 +5,8 @@
       <h2>Login</h2>
       <form @submit.prevent="handleSubmit">
         <div class="input-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" v-model="username" required />
+          <label for="username">Employer id</label>
+          <input type="text" id="username" v-model="employerBadge" required />
         </div>
         <div class="input-group">
           <label for="password">Password</label>
@@ -20,14 +20,22 @@
 
 <script setup>
 import { ref } from 'vue';
+import axios from 'axios';
 
-const username = ref('');
+const employerBadge = ref('');
 const password = ref('');
 
-const handleSubmit = () => {
-  // Handle login logic here
-  console.log('Username:', username.value);
-  console.log('Password:', password.value);
+const handleSubmit = async () => {
+  try {
+    const response = await axios.post('http://127.0.0.1:8000/api/login', {
+      employerBadge: employerBadge.value,
+      password: password.value,
+    });
+    // Handle successful login (e.g., store token in localStorage)
+    console.log('Login successful:', response.data);
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
 };
 </script>
 
@@ -37,7 +45,7 @@ const handleSubmit = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 98vh;
+  height: 100vh;
   background: url('../assets/bg/bg.jpg') no-repeat center center/cover;
 }
 

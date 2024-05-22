@@ -1,75 +1,86 @@
 <template>
-    <div class="modal-backdrop" @click.self="close">
-      <div class="modal">
-        <header>
-          <slot name="header"></slot>
-        </header>
-        <main>
-          <slot name="body"></slot>
-        </main>
-        <footer>
-          <button @click="close">Close</button>
-        </footer>
+  <div class="modal-overlay" @click.self="close">
+    <div class="modal-container">
+      <button class="modal-close" @click="close">×</button>
+      <div class="modal-content">
+        <slot name="header"></slot>
+        <slot name="body"></slot>
       </div>
     </div>
-  </template>
-  
-  <script setup>
-  const props = defineProps({
-    show: Boolean
-  });
-  
-  const emits = defineEmits(['close']);
-  
-  const close = () => {
-    emits('close');
-  };
-  </script>
-  
-  <style scoped>
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  </div>
+</template>
+
+<script setup>
+const props = defineProps({
+  show: Boolean,
+});
+
+const emit = defineEmits(['close']);
+
+const close = () => {
+  emit('close');
+};
+</script>
+
+<style scoped>
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.modal-container {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 500px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: slide-down 0.3s ease;
+}
+
+.modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #f44336;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-20%);
   }
-  
-  .modal {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 400px;
-    max-width: 100%;
+  to {
+    transform: translateY(0);
   }
-  
-  header {
-    margin-bottom: 1rem;
-  }
-  
-  footer {
-    margin-top: 1rem;
-    text-align: right;
-  }
-  
-  button {
-    padding: 0.5rem 1rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #2980b9;
-  }
-  </style>
-  
+}
+</style>
