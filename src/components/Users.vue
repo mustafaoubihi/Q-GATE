@@ -78,7 +78,7 @@
             <input id="image" type="file" @change="handleFileUpload('image', $event)" required />
         </div>
         
-        <button type="submit" class="submit-button">Add Checklist</button>
+        <button type="submit" class="submit-button">Add User</button>
       </form>
       </template>
     </modal>
@@ -154,6 +154,7 @@
         NewUser.value[key] = key.includes('image') ? null : '';
       });
       fetchUserslists()
+      closeModal()
     } catch (error) {
       console.error('There was an error adding the checklist!', error);
     }

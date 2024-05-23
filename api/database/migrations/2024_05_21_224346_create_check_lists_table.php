@@ -13,14 +13,19 @@ return new class extends Migration
     {
         Schema::create('check_lists', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable(); // Add the user_id column
             $table->string('problem');
             $table->string('zone');
             $table->string('post');
-            $table->boolean('isChecked');
+            $table->boolean('isChecked')->default(false);
+            $table->boolean('result')->nullable();
+            $table->string('motif')->nullable();
             $table->integer('nbProblems');
             $table->string('valideImgUrl');
             $table->string('notValideImgUrl');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 
@@ -29,6 +34,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('check_lists', function (Blueprint $table) {
+            $table->dropForeign(['user_id']); // Drop the foreign key constraint
+        });
         Schema::dropIfExists('check_lists');
     }
 };

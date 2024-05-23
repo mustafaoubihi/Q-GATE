@@ -10,7 +10,7 @@ class CheckListController extends Controller
 
     public function index()
     {
-        return CheckList::all();
+        return CheckList::with('user')->get();
     }
     public function store(Request $request)
     {
@@ -19,7 +19,6 @@ class CheckListController extends Controller
             'problem' => 'required|string',
             'zone' => 'required|string',
             'post' => 'required|string',
-            'isChecked' => 'required|boolean',
             'nbProblems' => 'required|integer',
             'valideImgUrl' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'notValideImgUrl' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -42,5 +41,29 @@ class CheckListController extends Controller
 
         // Return a JSON response
         return response()->json($checkList, 201);
+    }
+
+    public function update(Request $request ,$id)
+    {
+        // Validate the request data
+
+        $request->validate([
+            'user_id' => 'nullable|exists:users,id',
+            'motif' => 'nullable|string',
+            'result' => 'nullable|boolean',
+        ]);
+        // Create a new checklist entry
+        // Update the checklist fields
+        CheckList::whereId($id)->update([
+            'user_id' => $request->user_id,
+            'motif' => $request->motif,
+            'result' => $request->result,
+            'isChecked' => true,
+        ]);
+
+        // Return a success response
+
+        return response()->json(['message' => 'Checklist updated successfully.']);
+        // Return a JSON response
     }
 }

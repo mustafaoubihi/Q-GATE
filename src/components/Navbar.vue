@@ -6,12 +6,28 @@
       </div>
 
       <ul class="nav-links">
-        <li><a href="/manager">Inception list</a></li>
-        <li><a href="/users">Users</a></li>
-        <li><a href="/">Logout</a></li>
+        <li> <router-link to="/" v-if="isAdmin"> Manager</router-link> </li>
+        <li> <router-link to="/users" v-if="isAdmin">Users</router-link> </li>
+        <li> <router-link to="/inception" v-if="isAdmin">Inception</router-link> </li>
+        <!-- <li><a href="/">Inception list</a></li> -->
+        <li><a href="#" @click="logout">Logout</a></li>
       </ul>
     </nav>
 </template>
+
+<script setup>
+import { useRouter} from 'vue-router';
+import {ref} from 'vue'
+const router = useRouter();
+
+const authUser = JSON.parse(localStorage.getItem('user')); // Get user info from local storage
+const isAdmin = ref(authUser?.user.employerBadge.startsWith('admin'))
+
+const logout = ()=>{
+  localStorage.removeItem('user');
+  router.push('/login');
+}
+</script>
 
 <style>
 .navbar {
@@ -42,6 +58,7 @@
   list-style: none;
   display: flex;
   gap: 1rem;
+  padding: 0 15px;
 }
 
 .nav-links a {

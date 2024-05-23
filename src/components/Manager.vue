@@ -14,8 +14,10 @@
           <th>Post</th>
           <th>Number of Problems</th>
           <th>Status</th>
+          <th>result</th>
           <th>Valid Image</th>
           <th>Not Valid Image</th>
+          <th>Verified by</th>
         </tr>
       </thead>
       <tbody>
@@ -30,11 +32,18 @@
             </span>
           </td>
           <td>
+            <span :class="checklist.result ? 'badge-verified' : 'badge-in-progress'">
+              {{ checklist.result ?? '_' }}
+            </span>
+          </td>
+          <td>
             <img :src="getImageUrl(checklist.valideImgUrl)" alt="Valid Image" class="image-thumbnail" />
           </td>
           <td>
             <img :src="getImageUrl(checklist.notValideImgUrl)" alt="Not Valid Image" class="image-thumbnail" />
           </td>
+          <td>{{ checklist.user?  checklist?.user?.lastName + ' '+ checklist?.user?.firstName : '_' }}</td>
+
         </tr>
       </tbody>
     </table>
@@ -145,6 +154,7 @@ const submitForm = async () => {
       checkList.value[key] = key.includes('ImgUrl') ? null : '';
     });
     fetchChecklists()
+    closeModal()
   } catch (error) {
     console.error('There was an error adding the checklist!', error);
   }

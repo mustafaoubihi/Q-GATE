@@ -2,32 +2,44 @@
       <Navbar/>
   <div>
     <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Pic 1</th>
-            <th>Pic 2</th>
-            <th>Zone</th>
-            <th>Info 1</th>
-            <th>Info 2</th>
-            <th>etat</th>
-            <th>Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in items" :key="index">
-            <td>{{ index + 1 }}</td>
-            <td><img :src="`src/assets/pics/${item.pic1}`" alt="Pic 1" /></td>
-            <td><img :src="`src/assets/pics/${item.pic2}`" alt="Pic 2" /></td>
-            <td>{{ item.zone }}</td>
-            <td>{{ item.info1 }}</td>
-            <td>{{ item.info2 }}</td>
-            <td>{{ item.info2 }}</td>
-            <td><button @click="openModal(item)">Edit</button></td>
-          </tr>
-        </tbody>
-      </table>
+      <table class="fancy-table">
+      <thead>
+        <tr>
+          <th>Problem</th>
+          <th>Zone</th>
+          <th>Post</th>
+          <th>Status</th>
+          <th>Result</th>
+          <th>Valid Image</th>
+          <th>Not Valid Image</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="checklist in checklists" :key="checklist.id">
+          <td>{{ checklist.problem }}</td>
+          <td>{{ checklist.zone }}</td>
+          <td>{{ checklist.post }}</td>
+          <td>
+            <span :class="checklist.isChecked ? 'badge-verified' : 'badge-in-progress'">
+              {{ checklist.isChecked ? 'Verified' : 'In Progress' }}
+            </span>
+          </td>
+          <td>
+            <span :class="checklist.result ? 'badge-verified' : 'badge-in-progress'">
+              {{ checklist.result ? 'Ok' : 'Not ok' }}
+            </span>
+          </td>
+          <td>
+            <img :src="getImageUrl(checklist.valideImgUrl)" alt="Valid Image" class="image-thumbnail" />
+          </td>
+          <td>
+            <img :src="getImageUrl(checklist.notValideImgUrl)" alt="Not Valid Image" class="image-thumbnail" />
+          </td>
+          <td><button @click="openModal(checklist)">Verify</button></td>
+        </tr>
+      </tbody>
+    </table>
     </div>
     <modal v-if="showModal" @close="closeModal">
       <template v-slot:header>
@@ -37,22 +49,21 @@
         <form @submit.prevent="handleEdit">
           <div class="image-section">
             <div class="image-container">
-              <img :src="`src/assets/pics/${selectedItem.pic1}`" alt="Pic 1" />
-              <button type="button">OK</button>
+              <img :src="getImageUrl(selectedItem.valideImgUrl)"alt="Pic 1" />
+              <button type="button" @click="()=>{data.result = true}">OK {{ data.result === true?'!':'' }}</button>
             </div>
             <div class="image-container">
-              <img :src="`src/assets/pics/${selectedItem.pic2}`" alt="Pic 2" />
-              <button type="button">Not ok</button>
+              <img :src="getImageUrl(selectedItem.notValideImgUrl)" alt="Pic 2" />
+              <button type="button" @click="()=>{data.result = false}">Not ok {{ data.result === false?'!':'' }}</button>
             </div>
           </div>
           <div class="input-group">
             <label for="motif">Motif</label>
-            <textarea id="motif" v-model="selectedItem.motif" required class="areatxt" placeholder="Motif ..." rows="5"></textarea>
+            <textarea id="motif" v-model="data.motif" required class="areatxt" placeholder="Motif ..." rows="5"></textarea>
           </div>
           <div class="modal-footer">
             <button type="submit" >Save</button>
             <button @click="closeModal" class="secondaryBtn">Close</button>
-
           </div>
         </form>
       </template>
@@ -61,89 +72,88 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref,onMounted } from 'vue';
 import Modal from './Modal.vue'; // Assuming you have a Modal component
 import Navbar from '../components/Navbar.vue'
+import axios from 'axios';
 
 const selectedItem = ref(null);
-
-const items = ref([
-  {
-    pic1: 'cart1.jpg',
-    pic2: 'cart1.jpg',
-    zone: 'Zone 1',
-    info1: 'Information 1',
-    info2: 'Information 2',
-  },
-  {
-    pic1: 'cart1.jpg',
-    pic2: 'cart1.jpg',
-    zone: 'Zone 1',
-    info1: 'Information 1',
-    info2: 'Information 2',
-  },
-  {
-    pic1: 'cart1.jpg',
-    pic2: 'cart1.jpg',
-    zone: 'Zone 1',
-    info1: 'Information 1',
-    info2: 'Information 2',
-  },
-  {
-    pic1: 'cart1.jpg',
-    pic2: 'cart1.jpg',
-    zone: 'Zone 1',
-    info1: 'Information 1',
-    info2: 'Information 2',
-  },
-  // Add more items as needed
-]);
-
+const data = ref({
+  'user_id':JSON.parse(localStorage.getItem('user'))?.user.id,
+  result:null,
+  motif:''
+})
 const showModal = ref(false);
 
 const openModal = (item) => {
   selectedItem.value = { ...item };
   showModal.value = true;
 };
+const checklists = ref([]);
+
+const fetchChecklists = async () => {
+  try {
+    const response = await axios.get('http://127.0.0.1:8000/api/checklists');
+    checklists.value = response.data;
+  } catch (error) {
+    console.error('There was an error fetching the checklists!', error);
+  }
+};
+onMounted(fetchChecklists);
 
 const closeModal = () => {
   showModal.value = false;
 };
 
-const handleEdit = () => {
+const getImageUrl = (path) => {
+  return `http://127.0.0.1:8000/storage/${path}`;
+};
+
+const handleEdit = async() => {
   // Save changes to the selected item
+  try {
+    const res =  await axios.put(`http://127.0.0.1:8000/api/checklists/${selectedItem.value.id}`,data.value);
+    if (res.data) {
+      fetchChecklists()
+    }
+
+  } catch (error) {
+    console.error('There was an error fetching the checklists!', error);
+  }
   closeModal();
 };
+
+
 </script>
 
 <style scoped>
 
-
-.table-container {
-  margin: 2rem;
-
+.table-container{
+  padding: 100px;
 }
-
-table {
+.fancy-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th, td {
-  padding: 0.5rem;
-  text-align: left;
+.fancy-table thead {
+  background-color: #010a23;
+  color: #fff;
+}
+
+.fancy-table th,
+.fancy-table td {
+  padding: 10px;
+  text-align: center;
   border-bottom: 1px solid #ddd;
 }
 
-th {
-  background-color: #f4f4f4;
+.fancy-table tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 
-td img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 5px;
+.fancy-table tbody tr:hover {
+  background-color: #ddd;
 }
 
 
@@ -170,6 +180,13 @@ td img {
   max-width: 100%;
 }
 
+
+.image-thumbnail {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 5px;
+}
 .image-container {
   text-align: center;
 }
@@ -218,5 +235,20 @@ td img {
   width: 100%;
   border-radius: 8px;
   padding: 8px;
+}
+.badge-verified {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #1abc9c;
+  color: #fff;
+}
+
+.badge-in-progress {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #f39c12;
+  color: #fff;
 }
 </style>

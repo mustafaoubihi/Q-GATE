@@ -21,6 +21,9 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
 
 const employerBadge = ref('');
 const password = ref('');
@@ -33,6 +36,9 @@ const handleSubmit = async () => {
     });
     // Handle successful login (e.g., store token in localStorage)
     console.log('Login successful:', response.data);
+    localStorage.setItem('user', JSON.stringify(response.data));
+    router.push('/users'); // Navigate to users page
+
   } catch (error) {
     console.error('Login failed:', error);
   }
@@ -41,7 +47,9 @@ const handleSubmit = async () => {
 
 <style scoped>
 .login-container {
-  position: relative;
+  position: fixed;
+  top: 0%;
+  width: 100vw;
   display: flex;
   justify-content: center;
   align-items: center;

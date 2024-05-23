@@ -28,6 +28,11 @@ class User extends Authenticatable
         'image',
     ];
 
+    public function checkLists()
+    {
+        return $this->hasMany(CheckList::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

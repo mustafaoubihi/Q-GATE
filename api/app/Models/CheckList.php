@@ -18,4 +18,10 @@ class CheckList extends Model
         'valideImgUrl',
         'notValideImgUrl',
     ];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

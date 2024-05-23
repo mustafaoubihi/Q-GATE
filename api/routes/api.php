@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/checklists', [CheckListController::class, 'store']);
 Route::get('/checklists', [CheckListController::class, 'index']);
 
+Route::put('/checklists/{id}', [CheckListController::class, 'update']);
+
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/users', [UserController::class, 'index']);
