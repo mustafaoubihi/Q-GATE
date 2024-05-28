@@ -10,6 +10,7 @@
           <th>Post</th>
           <th>Status</th>
           <th>Result</th>
+          <th>Nb def</th>
           <th>OK</th>
           <th>NOK</th>
           <th></th>
@@ -30,6 +31,18 @@
               {{ checklist.result ? 'Ok' : 'Not ok' }}
             </span>
           </td>
+          <td class="td-text">
+            <div class="messageContainer">
+              <div @click="showMessage(parseInt(checklist.nbProblems),checklist.id)" :class="getClass(checklist.nbProblems)" class="nbHolder">
+                {{ checklist.nbProblems }}
+              </div>
+              <template v-if="message && checklist.id === activeId" >
+                <div class="dropdown" @click="closeIt()" :class="getClass(checklist.nbProblems)">
+                  {{ message }}
+                </div>
+              </template>
+            </div>
+        </td>
           <td>
             <img :src="getImageUrl(checklist.valideImgUrl)" alt="Valid Image" class="image-thumbnail" />
           </td>
@@ -76,6 +89,7 @@ import { ref,onMounted } from 'vue';
 import Modal from './Modal.vue'; // Assuming you have a Modal component
 import Navbar from '../components/Navbar.vue'
 import axios from 'axios';
+const message = ref(null);
 
 const selectedItem = ref(null);
 const data = ref({
@@ -90,6 +104,36 @@ const openModal = (item) => {
   showModal.value = true;
 };
 const checklists = ref([]);
+const activeId = ref(null)
+function showMessage(nbProblems,id) {
+  activeId.value = id
+  if (nbProblems >= 1 && nbProblems <= 3) {
+    message.value = "aviser contremaitre et auditeur";
+  } else if (nbProblems > 3 && nbProblems < 5) {
+    message.value = "aviser chef de shift et superviseur qualité";
+  } else if (nbProblems >= 5) {
+    message.value = "arrêter le poste";
+  } else {
+    message.value = null; // No message for other cases
+  }
+  console.log(message.value);
+}
+const closeIt = ()=>{
+  activeId.value = null
+  console.log(activeId.value );
+}
+function getClass(nbProblems) {
+  if (nbProblems >= 1 && nbProblems < 3) {
+    return 'yellow';
+  } else if (nbProblems >= 3 && nbProblems < 5) {
+    return 'orange';
+  } else if (nbProblems >= 5) {
+    return 'red';
+  } else if (nbProblems === 0) {
+    return 'green';
+  }
+  return '';
+}
 
 const fetchChecklists = async () => {
   try {
@@ -252,5 +296,53 @@ const handleEdit = async() => {
   border-radius: 5px;
   background-color: #f39c12;
   color: #fff;
+}
+
+.problem-cell {
+  position: relative;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  min-width: 220px;
+  top: 100%;
+  left: -30px;
+  z-index: 10;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.yellow {
+  background-color: yellow;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.red {
+  background-color: red;
+  color: white;
+}
+
+.green {
+  background-color: green;
+}
+.messageContainer{
+  position: absolute;
+  top: 30%;
+}
+.nbHolder{
+  padding:8px 20px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+.td-text{
+  position: relative;
 }
 </style>
