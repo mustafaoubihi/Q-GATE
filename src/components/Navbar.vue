@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar">
       <div class="logo">
-        <img src="../assets/pics/cart1.jpg" alt="">
+        <img src="../assets/pics/aptiv.png" alt="">
         <h1>QUALITY GATE</h1>
       </div>
 

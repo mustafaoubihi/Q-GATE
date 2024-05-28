@@ -18,6 +18,7 @@
           <th>Valid Image</th>
           <th>Not Valid Image</th>
           <th>Verified by</th>
+          <th>Verification date</th>
         </tr>
       </thead>
       <tbody>
@@ -33,7 +34,7 @@
           </td>
           <td>
             <span :class="checklist.result ? 'badge-verified' : 'badge-in-progress'">
-              {{ checklist.result ?? '_' }}
+              {{ checklist.result ? 'Ok' : 'Not ok' }}
             </span>
           </td>
           <td>
@@ -43,7 +44,7 @@
             <img :src="getImageUrl(checklist.notValideImgUrl)" alt="Not Valid Image" class="image-thumbnail" />
           </td>
           <td>{{ checklist.user?  checklist?.user?.lastName + ' '+ checklist?.user?.firstName : '_' }}</td>
-
+          <td> {{ checklist.isChecked ?  moment(checkList.updated_at).format('LLL') : '_' }}</td>
         </tr>
       </tbody>
     </table>
@@ -97,6 +98,7 @@ import { reactive, ref, onMounted } from 'vue';
 import Modal from './Modal.vue';
 import Navbar from '../components/Navbar.vue'
 import axios from 'axios';
+import moment from 'moment'; // Optional for formatting
 
 const checklists = ref([]);
 

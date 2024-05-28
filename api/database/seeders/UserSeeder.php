@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'email' => 'admin@example.com',
                 'employerBadge' => 'admin123',
                 'email_verified_at' => now(),
-                'password' => Hash::make('password'), // Use a secure password
+                'password' => '$2y$12$oue0/tgy5Y6ZlE5Cg1aGqOJGnhH.an32sbGfTYi6SaDz50BLwRsUa', // Use a secure password
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
                 'email' => 'user@example.com',
                 'employerBadge' => 'user123',
                 'email_verified_at' => now(),
-                'password' => Hash::make('password'), // Use a secure password
+                'password' => '$2y$12$oue0/tgy5Y6ZlE5Cg1aGqOJGnhH.an32sbGfTYi6SaDz50BLwRsUa', // Use a secure password
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

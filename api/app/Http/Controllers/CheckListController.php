@@ -46,12 +46,16 @@ class CheckListController extends Controller
     public function update(Request $request ,$id)
     {
         // Validate the request data
-
+        $checklist = CheckList::find($id);
+        $nb = $checklist->nbProblems;
         $request->validate([
             'user_id' => 'nullable|exists:users,id',
             'motif' => 'nullable|string',
             'result' => 'nullable|boolean',
         ]);
+        if ($request->result === false) {
+            $nb ++;
+        }
         // Create a new checklist entry
         // Update the checklist fields
         CheckList::whereId($id)->update([
@@ -59,11 +63,11 @@ class CheckListController extends Controller
             'motif' => $request->motif,
             'result' => $request->result,
             'isChecked' => true,
+            'nbProblems' => $nb,
         ]);
 
         // Return a success response
 
         return response()->json(['message' => 'Checklist updated successfully.']);
-        // Return a JSON response
     }
 }

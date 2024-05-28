@@ -4,6 +4,8 @@ import Manager from '../components/Manager.vue';
 import Login from '../components/Login.vue';
 import Inception from '../components/Inspection.vue'; // Note the correct spelling
 
+
+
 const routes = [
   {
     path: '/users',

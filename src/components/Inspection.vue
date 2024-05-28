@@ -10,8 +10,8 @@
           <th>Post</th>
           <th>Status</th>
           <th>Result</th>
-          <th>Valid Image</th>
-          <th>Not Valid Image</th>
+          <th>OK</th>
+          <th>NOK</th>
           <th></th>
         </tr>
       </thead>
@@ -192,8 +192,10 @@ const handleEdit = async() => {
 }
 
 .image-container img {
-  width: 350px;
-  height: 300px;
+  border:1px solid black;
+  border-radius: 15px;
+  width: 550px;
+  height: 400px;
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 0.5rem;

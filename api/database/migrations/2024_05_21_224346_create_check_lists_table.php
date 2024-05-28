@@ -20,7 +20,7 @@ return new class extends Migration
             $table->boolean('isChecked')->default(false);
             $table->boolean('result')->nullable();
             $table->string('motif')->nullable();
-            $table->integer('nbProblems');
+            $table->integer('nbProblems')->default(0);
             $table->string('valideImgUrl');
             $table->string('notValideImgUrl');
             $table->timestamps();

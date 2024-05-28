@@ -39,9 +39,9 @@ const close = () => {
 
 .modal-container {
   background: white;
-  padding: 30px;
+  padding: 15px;
   border-radius: 10px;
-  width: 65vw;
+  width: 75vw;
   max-width: 90%;
   position: relative;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
